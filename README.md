@@ -68,6 +68,24 @@ POST http://localhost:8080/api/game-runs
 GET  http://localhost:8080/api/game-runs/ranking
 ```
 
+## Python AI 서버 실행
+
+게임 결과를 분석해서 간단한 피드백을 반환하는 FastAPI 서버입니다.
+
+```powershell
+cd C:\SideProject_game\ai-python
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
+
+AI 분석 API:
+
+```text
+POST http://localhost:8000/api/analyze
+```
+
 ## 프로젝트 구조
 
 ```text

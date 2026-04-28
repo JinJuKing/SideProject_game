@@ -149,6 +149,18 @@ h2 {
   color: var(--text);
 }
 
+.feedback-panel {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 16px;
+}
+
+.feedback-panel p {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
 .controls {
   display: flex;
   align-items: center;

@@ -10,11 +10,13 @@ const saveStatusEl = document.querySelector("#saveStatus");
 const apiStatusEl = document.querySelector("#apiStatus");
 const rankingListEl = document.querySelector("#rankingList");
 const playerNameEl = document.querySelector("#playerName");
+const aiFeedbackEl = document.querySelector("#aiFeedback");
 
 const keys = new Set();
 const bestKey = "sideproject-game-best-time";
 const playerNameKey = "sideproject-game-player-name";
 const apiBaseUrl = "http://localhost:8080/api";
+const aiBaseUrl = "http://localhost:8000/api";
 
 let bestTime = Number(localStorage.getItem(bestKey) || 0);
 let state = createInitialState();
@@ -283,6 +285,7 @@ function endGame() {
   ctx.fillText(`${state.elapsed.toFixed(1)}초 생존`, canvas.width / 2, canvas.height / 2 + 28);
   messageEl.textContent = "다시 시작해서 최고 기록을 갱신해보세요.";
   saveGameRun(state.elapsed, finalLevel);
+  analyzeGameRun(state.elapsed, finalLevel);
 }
 
 async function saveGameRun(survivalTimeSeconds, levelReached) {
@@ -319,6 +322,32 @@ async function checkApiStatus() {
     setApiStatus(response.ok);
   } catch (error) {
     setApiStatus(false);
+  }
+}
+
+async function analyzeGameRun(survivalTimeSeconds, levelReached) {
+  aiFeedbackEl.textContent = "AI 피드백 생성 중...";
+
+  try {
+    const response = await fetch(`${aiBaseUrl}/analyze`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        survival_time_seconds: Number(survivalTimeSeconds.toFixed(2)),
+        level_reached: levelReached,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const feedback = await response.json();
+    aiFeedbackEl.innerHTML = `<strong>${escapeHtml(feedback.grade)}</strong><br>${escapeHtml(feedback.summary)}<br>${escapeHtml(feedback.recommendation)}`;
+  } catch (error) {
+    aiFeedbackEl.textContent = "Python AI 서버가 꺼져 있어 피드백을 불러오지 못했습니다.";
   }
 }
 

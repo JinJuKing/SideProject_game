@@ -18,5 +18,13 @@ services:
       timeout: 5s
       retries: 5
 
+  ai-python:
+    build:
+      context: ../ai-python
+    container_name: sideproject-game-ai
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+
 volumes:
   postgres_data:
