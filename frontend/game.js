@@ -4,26 +4,33 @@ const timeEl = document.querySelector("#time");
 const bestEl = document.querySelector("#best");
 const levelEl = document.querySelector("#level");
 const startButton = document.querySelector("#startButton");
+const registerButton = document.querySelector("#registerButton");
+const loginButton = document.querySelector("#loginButton");
 const refreshRankingButton = document.querySelector("#refreshRankingButton");
 const messageEl = document.querySelector("#message");
 const saveStatusEl = document.querySelector("#saveStatus");
+const authStatusEl = document.querySelector("#authStatus");
 const apiStatusEl = document.querySelector("#apiStatus");
 const rankingListEl = document.querySelector("#rankingList");
 const playerNameEl = document.querySelector("#playerName");
+const playerPasswordEl = document.querySelector("#playerPassword");
 const aiFeedbackEl = document.querySelector("#aiFeedback");
 
 const keys = new Set();
 const bestKey = "sideproject-game-best-time";
 const playerNameKey = "sideproject-game-player-name";
+const playerSessionKey = "sideproject-game-player-session";
 const apiBaseUrl = "http://localhost:8080/api";
 const aiBaseUrl = "http://localhost:8000/api";
 
 let bestTime = Number(localStorage.getItem(bestKey) || 0);
+let currentPlayer = loadPlayerSession();
 let state = createInitialState();
 let lastFrame = performance.now();
 
-playerNameEl.value = localStorage.getItem(playerNameKey) || "guest";
+playerNameEl.value = currentPlayer?.username || localStorage.getItem(playerNameKey) || "guest";
 bestEl.textContent = bestTime.toFixed(1);
+updateAuthStatus();
 drawStartScreen();
 checkApiStatus();
 loadRanking();
@@ -43,6 +50,54 @@ function createInitialState() {
       speed: 250,
     },
   };
+}
+
+async function registerPlayer() {
+  await authenticatePlayer("register");
+}
+
+async function loginPlayer() {
+  await authenticatePlayer("login");
+}
+
+async function authenticatePlayer(mode) {
+  const username = getPlayerName();
+  const password = playerPasswordEl.value.trim();
+
+  if (username.length < 2) {
+    authStatusEl.textContent = "닉네임은 2글자 이상이어야 합니다.";
+    return;
+  }
+
+  if (password.length < 4) {
+    authStatusEl.textContent = "비밀번호는 4글자 이상이어야 합니다.";
+    return;
+  }
+
+  try {
+    const response = await fetch(`${apiBaseUrl}/players/${mode}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    currentPlayer = await response.json();
+    localStorage.setItem(playerSessionKey, JSON.stringify(currentPlayer));
+    localStorage.setItem(playerNameKey, currentPlayer.username);
+    playerPasswordEl.value = "";
+    updateAuthStatus();
+    await loadRanking();
+  } catch (error) {
+    authStatusEl.textContent = mode === "register"
+      ? "가입 실패: 이미 있거나 서버를 확인해야 합니다."
+      : "로그인 실패: 닉네임 또는 비밀번호를 확인하세요.";
+  }
 }
 
 function startGame() {
@@ -298,7 +353,8 @@ async function saveGameRun(survivalTimeSeconds, levelReached) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        guestName: getPlayerName(),
+        playerId: currentPlayer?.id ?? null,
+        guestName: currentPlayer?.username || getPlayerName(),
         survivalTimeSeconds: Number(survivalTimeSeconds.toFixed(2)),
         levelReached,
       }),
@@ -308,10 +364,12 @@ async function saveGameRun(survivalTimeSeconds, levelReached) {
       throw new Error(`HTTP ${response.status}`);
     }
 
-    saveStatusEl.textContent = "DB 저장 완료";
+    saveStatusEl.textContent = currentPlayer
+      ? "내 최고 기록이 DB에 반영되었습니다."
+      : "게스트 기록이 DB에 저장되었습니다.";
     await loadRanking();
   } catch (error) {
-    saveStatusEl.textContent = "DB 서버가 꺼져 있어 로컬 기록만 저장되었습니다.";
+    saveStatusEl.textContent = "DB 저장에 실패했습니다. API와 DB 상태를 확인하세요.";
     setApiStatus(false);
   }
 }
@@ -387,6 +445,20 @@ function setApiStatus(isOnline) {
   apiStatusEl.textContent = isOnline ? "API 연결됨" : "API 대기 중";
 }
 
+function updateAuthStatus() {
+  authStatusEl.textContent = currentPlayer
+    ? `${currentPlayer.username} 로그인됨`
+    : "로그인하면 최고 기록이 플레이어별로 갱신됩니다.";
+}
+
+function loadPlayerSession() {
+  try {
+    return JSON.parse(localStorage.getItem(playerSessionKey));
+  } catch (error) {
+    return null;
+  }
+}
+
 function getPlayerName() {
   return playerNameEl.value.trim() || "guest";
 }
@@ -432,5 +504,7 @@ playerNameEl.addEventListener("change", () => {
   localStorage.setItem(playerNameKey, getPlayerName());
 });
 
+registerButton.addEventListener("click", registerPlayer);
+loginButton.addEventListener("click", loginPlayer);
 startButton.addEventListener("click", startGame);
 refreshRankingButton.addEventListener("click", loadRanking);

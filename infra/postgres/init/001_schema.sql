@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS users (
   id BIGSERIAL PRIMARY KEY,
   username VARCHAR(50) NOT NULL UNIQUE,
+  password_hash VARCHAR(128) NOT NULL DEFAULT '',
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -16,6 +17,10 @@ CREATE TABLE IF NOT EXISTS game_runs (
 
 CREATE INDEX IF NOT EXISTS idx_game_runs_survival_time
   ON game_runs (survival_time_seconds DESC, created_at ASC);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_game_runs_unique_user
+  ON game_runs (user_id)
+  WHERE user_id IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS ai_feedback (
   id BIGSERIAL PRIMARY KEY,

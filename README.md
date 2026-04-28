@@ -19,11 +19,14 @@
 
 - 브라우저에서 실행 가능한 회피 게임
 - `WASD` 캐릭터 이동
+- 닉네임/비밀번호 기반 플레이어 가입 및 로그인
 - 사방에서 날아오는 탄 생성
 - 시간이 지날수록 난이도 상승
 - 가로/세로 웨이브 탄막 패턴
 - 충돌 시 게임 종료
 - 생존 시간 측정
+- 로그인 플레이어별 최고 기록 DB 갱신
+- 랭킹 조회
 - 최고 기록 브라우저 로컬 저장
 
 게임 실행 방법:
@@ -71,6 +74,8 @@ cd C:\SideProject_game\backend-java
 게임 기록 저장 API:
 
 ```text
+POST http://localhost:8080/api/players/register
+POST http://localhost:8080/api/players/login
 POST http://localhost:8080/api/game-runs
 GET  http://localhost:8080/api/game-runs/ranking
 ```
@@ -116,8 +121,6 @@ docs/           설계 문서
 
 - Java Spring Boot API 서버
 - PostgreSQL 게임 기록 저장
-- 랭킹 조회
-- 로그인/회원가입
 - Python AI 플레이 분석
 - 결과 화면 개선
 - Docker 기반 전체 실행 환경

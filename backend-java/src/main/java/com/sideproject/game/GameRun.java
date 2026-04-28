@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -17,7 +19,11 @@ public class GameRun {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "guest_name", nullable = false, length = 50)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Player player;
+
+    @Column(name = "guest_name", length = 50)
     private String guestName;
 
     @Column(name = "survival_time_seconds", nullable = false, precision = 8, scale = 2)
@@ -38,12 +44,23 @@ public class GameRun {
         this.levelReached = levelReached;
     }
 
+    public GameRun(Player player, BigDecimal survivalTimeSeconds, Integer levelReached) {
+        this.player = player;
+        this.guestName = player.getUsername();
+        this.survivalTimeSeconds = survivalTimeSeconds;
+        this.levelReached = levelReached;
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getGuestName() {
         return guestName;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     public BigDecimal getSurvivalTimeSeconds() {
@@ -56,5 +73,11 @@ public class GameRun {
 
     public OffsetDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void updateBestScore(BigDecimal survivalTimeSeconds, Integer levelReached) {
+        this.survivalTimeSeconds = survivalTimeSeconds;
+        this.levelReached = levelReached;
+        this.createdAt = OffsetDateTime.now();
     }
 }

@@ -9,11 +9,22 @@
   <body>
     <main class="shell">
       <section class="top-bar">
-        <label class="player-field">
-          <span class="label">PLAYER</span>
-          <input id="playerName" type="text" maxlength="50" value="guest" />
-        </label>
-        <div id="apiStatus" class="api-status">API 확인 중...</div>
+        <div class="auth-panel">
+          <label class="player-field">
+            <span class="label">닉네임</span>
+            <input id="playerName" type="text" maxlength="50" value="guest" />
+          </label>
+          <label class="player-field">
+            <span class="label">비밀번호</span>
+            <input id="playerPassword" type="password" maxlength="100" />
+          </label>
+          <button id="registerButton" class="secondary-button" type="button">가입</button>
+          <button id="loginButton" class="secondary-button" type="button">로그인</button>
+        </div>
+        <div>
+          <div id="apiStatus" class="api-status">API 확인 중...</div>
+          <p id="authStatus" class="auth-status">로그인하면 최고 기록이 플레이어별로 갱신됩니다.</p>
+        </div>
       </section>
 
       <section class="hud" aria-label="game status">
@@ -53,7 +64,7 @@
         <button id="startButton" type="button">Start</button>
         <div>
           <p id="message">WASD로 이동하고 날아오는 탄을 최대한 오래 피하세요.</p>
-          <p id="saveStatus" class="save-status">DB 서버가 켜져 있으면 결과가 자동 저장됩니다.</p>
+          <p id="saveStatus" class="save-status">로그인 후 플레이하면 DB의 내 최고 기록이 갱신됩니다.</p>
         </div>
       </section>
     </main>

@@ -37,9 +37,15 @@ body {
   margin-bottom: 12px;
 }
 
+.auth-panel {
+  display: grid;
+  grid-template-columns: minmax(120px, 180px) minmax(120px, 180px) auto auto;
+  align-items: end;
+  gap: 8px;
+}
+
 .player-field {
   display: block;
-  min-width: min(100%, 260px);
 }
 
 .label {
@@ -76,6 +82,13 @@ input {
 
 .api-status.offline {
   color: var(--danger);
+}
+
+.auth-status {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 6px;
+  text-align: right;
 }
 
 .hud {
@@ -223,5 +236,13 @@ p {
 
   .api-status {
     width: 100%;
+  }
+
+  .auth-panel {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .auth-status {
+    text-align: left;
   }
 }
