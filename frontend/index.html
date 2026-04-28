@@ -8,6 +8,14 @@
   </head>
   <body>
     <main class="shell">
+      <section class="top-bar">
+        <label class="player-field">
+          <span class="label">PLAYER</span>
+          <input id="playerName" type="text" maxlength="50" value="guest" />
+        </label>
+        <div id="apiStatus" class="api-status">API 확인 중...</div>
+      </section>
+
       <section class="hud" aria-label="game status">
         <div>
           <span class="label">TIME</span>
@@ -23,7 +31,19 @@
         </div>
       </section>
 
-      <canvas id="game" width="960" height="540" aria-label="dodging game"></canvas>
+      <section class="game-layout">
+        <canvas id="game" width="960" height="540" aria-label="dodging game"></canvas>
+
+        <aside class="ranking-panel">
+          <div class="ranking-header">
+            <h2>랭킹</h2>
+            <button id="refreshRankingButton" class="secondary-button" type="button">새로고침</button>
+          </div>
+          <ol id="rankingList" class="ranking-list">
+            <li>서버가 켜지면 랭킹을 불러옵니다.</li>
+          </ol>
+        </aside>
+      </section>
 
       <section class="controls">
         <button id="startButton" type="button">Start</button>

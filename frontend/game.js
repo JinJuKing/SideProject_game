@@ -4,19 +4,27 @@ const timeEl = document.querySelector("#time");
 const bestEl = document.querySelector("#best");
 const levelEl = document.querySelector("#level");
 const startButton = document.querySelector("#startButton");
+const refreshRankingButton = document.querySelector("#refreshRankingButton");
 const messageEl = document.querySelector("#message");
 const saveStatusEl = document.querySelector("#saveStatus");
+const apiStatusEl = document.querySelector("#apiStatus");
+const rankingListEl = document.querySelector("#rankingList");
+const playerNameEl = document.querySelector("#playerName");
 
 const keys = new Set();
 const bestKey = "sideproject-game-best-time";
+const playerNameKey = "sideproject-game-player-name";
 const apiBaseUrl = "http://localhost:8080/api";
 
 let bestTime = Number(localStorage.getItem(bestKey) || 0);
 let state = createInitialState();
 let lastFrame = performance.now();
 
+playerNameEl.value = localStorage.getItem(playerNameKey) || "guest";
 bestEl.textContent = bestTime.toFixed(1);
 drawStartScreen();
+checkApiStatus();
+loadRanking();
 
 function createInitialState() {
   return {
@@ -40,8 +48,9 @@ function startGame() {
   state.running = true;
   lastFrame = performance.now();
   startButton.textContent = "Restart";
-  messageEl.textContent = "움직임을 크게 가져가되, 벽에 몰리지 않는 게 핵심입니다.";
+  messageEl.textContent = "크게 움직이되, 벽에 몰리지 않는 게 핵심입니다.";
   saveStatusEl.textContent = "플레이 중...";
+  localStorage.setItem(playerNameKey, getPlayerName());
   requestAnimationFrame(tick);
 }
 
@@ -286,7 +295,7 @@ async function saveGameRun(survivalTimeSeconds, levelReached) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        guestName: "guest",
+        guestName: getPlayerName(),
         survivalTimeSeconds: Number(survivalTimeSeconds.toFixed(2)),
         levelReached,
       }),
@@ -297,9 +306,60 @@ async function saveGameRun(survivalTimeSeconds, levelReached) {
     }
 
     saveStatusEl.textContent = "DB 저장 완료";
+    await loadRanking();
   } catch (error) {
     saveStatusEl.textContent = "DB 서버가 꺼져 있어 로컬 기록만 저장되었습니다.";
+    setApiStatus(false);
   }
+}
+
+async function checkApiStatus() {
+  try {
+    const response = await fetch(`${apiBaseUrl}/health`);
+    setApiStatus(response.ok);
+  } catch (error) {
+    setApiStatus(false);
+  }
+}
+
+async function loadRanking() {
+  try {
+    const response = await fetch(`${apiBaseUrl}/game-runs/ranking`);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const rankings = await response.json();
+    renderRanking(rankings);
+    setApiStatus(true);
+  } catch (error) {
+    rankingListEl.innerHTML = "<li>서버 실행 후 랭킹을 불러올 수 있습니다.</li>";
+    setApiStatus(false);
+  }
+}
+
+function renderRanking(rankings) {
+  if (rankings.length === 0) {
+    rankingListEl.innerHTML = "<li>아직 저장된 기록이 없습니다.</li>";
+    return;
+  }
+
+  rankingListEl.innerHTML = rankings
+    .map((run) => {
+      const time = Number(run.survivalTimeSeconds).toFixed(1);
+      return `<li><strong>${escapeHtml(run.guestName)}</strong> ${time}초 / Lv.${run.levelReached}</li>`;
+    })
+    .join("");
+}
+
+function setApiStatus(isOnline) {
+  apiStatusEl.classList.toggle("online", isOnline);
+  apiStatusEl.classList.toggle("offline", !isOnline);
+  apiStatusEl.textContent = isOnline ? "API 연결됨" : "API 대기 중";
+}
+
+function getPlayerName() {
+  return playerNameEl.value.trim() || "guest";
 }
 
 function getLevel() {
@@ -318,6 +378,15 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 window.addEventListener("keydown", (event) => {
   const key = event.key.toLowerCase();
   if (["w", "a", "s", "d"].includes(key)) {
@@ -330,4 +399,9 @@ window.addEventListener("keyup", (event) => {
   keys.delete(event.key.toLowerCase());
 });
 
+playerNameEl.addEventListener("change", () => {
+  localStorage.setItem(playerNameKey, getPlayerName());
+});
+
 startButton.addEventListener("click", startGame);
+refreshRankingButton.addEventListener("click", loadRanking);
