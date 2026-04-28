@@ -1,0 +1,26 @@
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+
+# Build outputs
+dist/
+build/
+target/
+
+# Local env
+.env
+.env.*
+
+# Local installers
+*.exe
+*.msi
+
+# Logs
+*.log

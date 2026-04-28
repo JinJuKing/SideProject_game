@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SideProject Game</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hud" aria-label="game status">
+        <div>
+          <span class="label">TIME</span>
+          <strong id="time">0.0</strong>
+        </div>
+        <div>
+          <span class="label">BEST</span>
+          <strong id="best">0.0</strong>
+        </div>
+        <div>
+          <span class="label">LEVEL</span>
+          <strong id="level">1</strong>
+        </div>
+      </section>
+
+      <canvas id="game" width="960" height="540" aria-label="dodging game"></canvas>
+
+      <section class="controls">
+        <button id="startButton" type="button">Start</button>
+        <p id="message">WASD로 이동하고 날아오는 탄을 최대한 오래 피하세요.</p>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
