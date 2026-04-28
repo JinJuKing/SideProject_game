@@ -1,36 +1,39 @@
-# Game Design
+# 게임 설계
 
-## Core Loop
+## 핵심 플레이 흐름
 
-1. Player enters the arena.
-2. Projectiles spawn from outside the screen and fly across the arena.
-3. Player avoids projectiles with `WASD`.
-4. Survival time increases the score.
-5. Difficulty rises over time.
-6. Collision ends the run.
-7. Best score is saved.
+1. 플레이어가 경기장 중앙에서 시작합니다.
+2. 화면 밖에서 탄이 생성되어 경기장 안으로 날아옵니다.
+3. 플레이어는 `WASD`로 탄을 피합니다.
+4. 오래 살아남을수록 점수가 올라갑니다.
+5. 시간이 지날수록 난이도가 올라갑니다.
+6. 탄과 충돌하면 게임이 종료됩니다.
+7. 최고 기록이 저장됩니다.
 
-## Portfolio Features
+## 포트폴리오에서 보여줄 기능
 
-The game should eventually demonstrate:
+이 프로젝트는 최종적으로 다음 역량을 보여주는 것을 목표로 합니다.
 
-- Real-time frontend interaction
-- User authentication
-- Score persistence
-- Ranking board
-- Match history
-- AI-based play analysis
-- Deployment with separate services
+- 실시간 프론트엔드 인터랙션
+- 사용자 로그인/회원가입
+- 게임 기록 저장
+- 랭킹 시스템
+- 플레이 히스토리
+- AI 기반 플레이 분석
+- Java, Python, DB 서비스를 분리한 구조
+- Docker와 클라우드 배포
 
-## Difficulty Ideas
+## 난이도 설계
 
-- Projectile speed increases every few seconds.
-- Spawn interval decreases over time.
-- Special projectile types appear after score thresholds.
-- Attack waves can be generated from predefined patterns.
+- 시간이 지날수록 탄 속도가 증가합니다.
+- 탄 생성 간격이 점점 짧아집니다.
+- 일정 레벨부터 추가 탄이 동시에 생성됩니다.
+- 주기적으로 가로/세로 웨이브 탄막이 생성됩니다.
+- 이후 특수 탄, 보스 패턴, 아이템 등을 추가할 수 있습니다.
 
-## AI Feature Ideas
+## AI 분석 아이디어
 
-- Analyze death reason: corner trap, slow reaction, risky movement, center control issue.
-- Recommend practice tips based on match history.
-- Summarize user growth over multiple sessions.
+- 사망 원인 분석: 벽에 몰림, 반응 속도 부족, 위험한 이동, 중앙 유지 실패
+- 플레이 기록 기반 연습 팁 추천
+- 여러 판의 기록을 바탕으로 성장 추세 요약
+- 플레이 스타일 분류: 안정형, 공격적 회피형, 벽 의존형 등

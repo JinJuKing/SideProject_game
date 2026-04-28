@@ -1,38 +1,47 @@
 # SideProject Game
 
-Developer portfolio project built around a survival dodging game.
+개발자 취업 포트폴리오를 목표로 만드는 생존 회피 게임 프로젝트입니다.
 
-## Concept
+## 프로젝트 컨셉
 
-The player controls a character with `WASD` and survives as long as possible while projectiles fly in from outside the arena. Difficulty increases over time through faster projectiles, more frequent spawns, and denser attack patterns.
+플레이어는 `WASD`로 캐릭터를 조작하고, 사방에서 날아오는 탄을 최대한 오래 피해야 합니다.
+시간이 지날수록 탄 속도, 생성 빈도, 공격 패턴이 강해지며 생존 시간이 점수가 됩니다.
 
-## Planned Stack
+## 사용 예정 기술
 
-- Frontend: browser game UI
-- Java: Spring Boot game/user/ranking API
-- Python: FastAPI AI analysis service
+- Frontend: 브라우저 기반 게임 화면
+- Java: Spring Boot 게임 기록/유저/랭킹 API
+- Python: FastAPI 기반 AI 분석 서버
 - DB: PostgreSQL
-- Infra: Docker Compose, CI/CD, cloud deployment
+- Infra: Docker Compose, CI/CD, 클라우드 배포
 
-## Current MVP
+## 현재 구현된 기능
 
-- Playable survival game
-- WASD movement
-- Increasing difficulty
-- Survival time and best score saved locally
+- 브라우저에서 실행 가능한 회피 게임
+- `WASD` 캐릭터 이동
+- 사방에서 날아오는 탄 생성
+- 시간이 지날수록 난이도 상승
+- 가로/세로 웨이브 탄막 패턴
+- 충돌 시 게임 종료
+- 생존 시간 측정
+- 최고 기록 브라우저 로컬 저장
 
-Open `frontend/index.html` in a browser to play.
+게임 실행 방법:
 
-## Local Database
+```text
+C:\SideProject_game\frontend\index.html
+```
 
-After Docker Desktop is installed, start PostgreSQL:
+위 파일을 브라우저로 열고 `Start` 버튼을 누르면 플레이할 수 있습니다.
+
+## 로컬 DB 실행
 
 ```powershell
 cd C:\SideProject_game\infra
 docker compose up -d
 ```
 
-Connection info:
+DB 접속 정보:
 
 ```text
 Host: localhost
@@ -42,12 +51,23 @@ User: sideproject
 Password: sideproject1234
 ```
 
-## Project Layout
+## 프로젝트 구조
 
 ```text
-frontend/       Browser game MVP
-backend-java/   Spring Boot API server, planned
-ai-python/      FastAPI AI service, planned
-infra/          Docker/deployment files, planned
-docs/           Architecture and planning docs
+frontend/       브라우저 게임 MVP
+backend-java/   Spring Boot API 서버 예정
+ai-python/      FastAPI AI 분석 서버 예정
+infra/          Docker, DB, 배포 설정
+docs/           설계 문서
 ```
+
+## 앞으로 구현할 기능
+
+- Java Spring Boot API 서버
+- PostgreSQL 게임 기록 저장
+- 랭킹 조회
+- 로그인/회원가입
+- Python AI 플레이 분석
+- 결과 화면 개선
+- Docker 기반 전체 실행 환경
+- 클라우드 배포
