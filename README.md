@@ -106,3 +106,11 @@ docs/           설계 문서
 - 결과 화면 개선
 - Docker 기반 전체 실행 환경
 - 클라우드 배포
+
+## 자동 검증
+
+GitHub Actions로 다음 검증을 자동 실행합니다.
+
+- Frontend: `node --check frontend/game.js`
+- Java Backend: `./mvnw test`
+- Python AI: `python -m py_compile main.py`
