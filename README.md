@@ -72,6 +72,15 @@ GET  http://localhost:8080/api/game-runs/ranking
 
 게임 결과를 분석해서 간단한 피드백을 반환하는 FastAPI 서버입니다.
 
+의존성 설치 없이 빠르게 테스트할 때:
+
+```powershell
+cd C:\SideProject_game\ai-python
+python local_server.py
+```
+
+FastAPI 서버로 실행할 때:
+
 ```powershell
 cd C:\SideProject_game\ai-python
 python -m venv .venv
