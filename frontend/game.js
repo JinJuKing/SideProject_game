@@ -5,9 +5,11 @@ const bestEl = document.querySelector("#best");
 const levelEl = document.querySelector("#level");
 const startButton = document.querySelector("#startButton");
 const messageEl = document.querySelector("#message");
+const saveStatusEl = document.querySelector("#saveStatus");
 
 const keys = new Set();
 const bestKey = "sideproject-game-best-time";
+const apiBaseUrl = "http://localhost:8080/api";
 
 let bestTime = Number(localStorage.getItem(bestKey) || 0);
 let state = createInitialState();
@@ -39,6 +41,7 @@ function startGame() {
   lastFrame = performance.now();
   startButton.textContent = "Restart";
   messageEl.textContent = "움직임을 크게 가져가되, 벽에 몰리지 않는 게 핵심입니다.";
+  saveStatusEl.textContent = "플레이 중...";
   requestAnimationFrame(tick);
 }
 
@@ -251,6 +254,7 @@ function drawStartScreen() {
 function endGame() {
   state.running = false;
   state.gameOver = true;
+  const finalLevel = getLevel();
 
   if (state.elapsed > bestTime) {
     bestTime = state.elapsed;
@@ -269,6 +273,33 @@ function endGame() {
   ctx.font = "18px Arial";
   ctx.fillText(`${state.elapsed.toFixed(1)}초 생존`, canvas.width / 2, canvas.height / 2 + 28);
   messageEl.textContent = "다시 시작해서 최고 기록을 갱신해보세요.";
+  saveGameRun(state.elapsed, finalLevel);
+}
+
+async function saveGameRun(survivalTimeSeconds, levelReached) {
+  saveStatusEl.textContent = "DB에 결과 저장 중...";
+
+  try {
+    const response = await fetch(`${apiBaseUrl}/game-runs`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        guestName: "guest",
+        survivalTimeSeconds: Number(survivalTimeSeconds.toFixed(2)),
+        levelReached,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    saveStatusEl.textContent = "DB 저장 완료";
+  } catch (error) {
+    saveStatusEl.textContent = "DB 서버가 꺼져 있어 로컬 기록만 저장되었습니다.";
+  }
 }
 
 function getLevel() {

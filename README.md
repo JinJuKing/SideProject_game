@@ -45,10 +45,27 @@ DB 접속 정보:
 
 ```text
 Host: localhost
-Port: 5432
+Port: 5433
 Database: sideproject_game
 User: sideproject
 Password: sideproject1234
+```
+
+## Java 서버 실행
+
+PostgreSQL 실행 후 Spring Boot API 서버를 실행합니다.
+JDK 17 이상이 필요합니다.
+
+```powershell
+cd C:\SideProject_game\backend-java
+.\mvnw.cmd spring-boot:run
+```
+
+게임 기록 저장 API:
+
+```text
+POST http://localhost:8080/api/game-runs
+GET  http://localhost:8080/api/game-runs/ranking
 ```
 
 ## 프로젝트 구조

@@ -90,6 +90,12 @@ p {
   margin: 0;
 }
 
+.save-status {
+  color: #6f7d8c;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
 @media (max-width: 640px) {
   .hud {
     grid-template-columns: 1fr;
