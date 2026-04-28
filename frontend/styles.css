@@ -206,6 +206,12 @@ button:hover {
   filter: brightness(1.08);
 }
 
+button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.8) brightness(0.7);
+  opacity: 0.65;
+}
+
 p {
   color: var(--muted);
   margin: 0;

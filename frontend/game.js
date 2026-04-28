@@ -101,6 +101,13 @@ async function authenticatePlayer(mode) {
 }
 
 function startGame() {
+  if (!currentPlayer) {
+    messageEl.textContent = "가입 또는 로그인 후 게임을 시작할 수 있습니다.";
+    saveStatusEl.textContent = "닉네임과 비밀번호를 입력한 뒤 가입 또는 로그인을 눌러주세요.";
+    playerPasswordEl.focus();
+    return;
+  }
+
   state = createInitialState();
   state.running = true;
   lastFrame = performance.now();
@@ -353,8 +360,7 @@ async function saveGameRun(survivalTimeSeconds, levelReached) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        playerId: currentPlayer?.id ?? null,
-        guestName: currentPlayer?.username || getPlayerName(),
+        playerId: currentPlayer.id,
         survivalTimeSeconds: Number(survivalTimeSeconds.toFixed(2)),
         levelReached,
       }),
@@ -364,9 +370,7 @@ async function saveGameRun(survivalTimeSeconds, levelReached) {
       throw new Error(`HTTP ${response.status}`);
     }
 
-    saveStatusEl.textContent = currentPlayer
-      ? "내 최고 기록이 DB에 반영되었습니다."
-      : "게스트 기록이 DB에 저장되었습니다.";
+    saveStatusEl.textContent = "내 최고 기록이 DB에 반영되었습니다.";
     await loadRanking();
   } catch (error) {
     saveStatusEl.textContent = "DB 저장에 실패했습니다. API와 DB 상태를 확인하세요.";
@@ -449,6 +453,8 @@ function updateAuthStatus() {
   authStatusEl.textContent = currentPlayer
     ? `${currentPlayer.username} 로그인됨`
     : "로그인하면 최고 기록이 플레이어별로 갱신됩니다.";
+  startButton.disabled = !currentPlayer;
+  startButton.title = currentPlayer ? "" : "가입 또는 로그인 후 시작할 수 있습니다.";
 }
 
 function loadPlayerSession() {

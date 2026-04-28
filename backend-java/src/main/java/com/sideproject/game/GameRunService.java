@@ -21,19 +21,10 @@ public class GameRunService {
 
     @Transactional
     public GameRunResponse create(CreateGameRunRequest request) {
-        String guestName = normalizeGuestName(request.guestName());
         BigDecimal survivalTime = BigDecimal.valueOf(request.survivalTimeSeconds())
                 .setScale(2, RoundingMode.HALF_UP);
 
-        if (request.playerId() != null) {
-            return createOrUpdatePlayerBest(request.playerId(), survivalTime, request.levelReached());
-        }
-
-        GameRun saved = gameRunRepository.save(
-                new GameRun(guestName, survivalTime, request.levelReached())
-        );
-
-        return GameRunResponse.from(saved);
+        return createOrUpdatePlayerBest(request.playerId(), survivalTime, request.levelReached());
     }
 
     @Transactional(readOnly = true)
@@ -42,13 +33,6 @@ public class GameRunService {
                 .stream()
                 .map(GameRunResponse::from)
                 .toList();
-    }
-
-    private String normalizeGuestName(String guestName) {
-        if (guestName == null || guestName.isBlank()) {
-            return "guest";
-        }
-        return guestName.trim();
     }
 
     private GameRunResponse createOrUpdatePlayerBest(Long playerId, BigDecimal survivalTime, Integer levelReached) {
