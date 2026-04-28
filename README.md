@@ -51,6 +51,13 @@ User: sideproject
 Password: sideproject1234
 ```
 
+이미 설치된 PostgreSQL을 사용할 경우, PostgreSQL 관리자 계정에서 프로젝트 DB와 계정을 먼저 만들어야 합니다.
+
+```sql
+CREATE USER sideproject WITH PASSWORD 'sideproject1234';
+CREATE DATABASE sideproject_game OWNER sideproject;
+```
+
 ## Java 서버 실행
 
 PostgreSQL 실행 후 Spring Boot API 서버를 실행합니다.
